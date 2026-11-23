@@ -1,0 +1,21 @@
+{
+  "name": "01-observability",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "build": "esbuild src/handler.ts --bundle --platform=node --target=node22 --format=esm --outfile=dist/index.mjs && cd dist && zip -qj function.zip index.mjs",
+    "deploy": "./deploy.sh",
+    "load": "./load.sh",
+    "report": "esbuild src/report.ts --bundle --platform=node --target=node22 --format=esm --outfile=dist/report.mjs --log-level=warning && node dist/report.mjs"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.164",
+    "@types/node": "^26.6.6",
+    "esbuild": "^0.28.2",
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.1"
+  }
+}
