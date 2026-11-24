@@ -14,11 +14,14 @@ Read `PROGRESS.md` before doing anything. It says where we are and what's next.
 - Commit under my name only, no co-author trailer.
 
 ## Setup on a new machine
+Full steps are in `PROGRESS.md` under "START HERE". Short version:
 1. Install Docker, Node 22, AWS CLI v2.
-2. `git clone https://github.com/roshan-ican/lambda-launch-ready aws-ts && cd aws-ts`
+2. `git clone https://github.com/roshan-ican/lambda-launch-ready && cd lambda-launch-ready && git switch projects-02-03`
 3. Create `.env` with `LOCALSTACK_AUTH_TOKEN=...` (from app.localstack.cloud → Auth Tokens). Never commit it.
 4. `docker compose up -d` then `curl localhost:4566/_localstack/health`
-5. `cd 01-observability && npm install && npm test`
+5. `npm install && npm test` in `01-observability`, `02-lean-bundle`, `03-webhook-reliability`
 
 ## Next
-Project 02 (TypeScript, `02-lean-bundle`) — build a deliberately heavy handler (imports all AWS clients at top), measure with deploy/load/report, then fix with esbuild minify, per-client `@aws-sdk/client-*` imports, lazy clients. Goal: checkout p95 under 500 ms, worst cold start under 1 s, compared against the Project 01 baseline in `PROGRESS.md`. Then 03 to 06, then the optional Python SnapStart side track.
+See "What is left, in order" in `PROGRESS.md`. First up: the Project 03 failure path (DLQ, alarm, replay), then the Next.js demo UI, then README, then interview practice (system design is the main round).
+
+Original Project 02 note: Project 02 (TypeScript, `02-lean-bundle`) — build a deliberately heavy handler (imports all AWS clients at top), measure with deploy/load/report, then fix with esbuild minify, per-client `@aws-sdk/client-*` imports, lazy clients. Goal: checkout p95 under 500 ms, worst cold start under 1 s, compared against the Project 01 baseline in `PROGRESS.md`. Then 03 to 06, then the optional Python SnapStart side track.

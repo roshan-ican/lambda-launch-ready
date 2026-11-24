@@ -5,6 +5,7 @@ export MSYS_NO_PATHCONV=1
 export AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test
 export AWS_DEFAULT_REGION=me-central-1 AWS_ENDPOINT_URL=http://localhost:4566 AWS_PAGER=""
 OUT=/dev/null; [ "${OS:-}" = Windows_NT ] && OUT=NUL
+case "$(uname -m)" in arm64|aarch64) ARCH=arm64 ;; *) ARCH=x86_64 ;; esac
 ROLE=arn:aws:iam::000000000000:role/lambda-role
 SECRET=${WEBHOOK_SECRET:-whsec_demo}
 
@@ -49,12 +50,12 @@ aws lambda delete-function --function-name webhook-fn >"$OUT" 2>&1 || true
 aws lambda delete-function --function-name worker-fn >"$OUT" 2>&1 || true
 aws logs delete-log-group --log-group-name /aws/lambda/worker-fn >"$OUT" 2>&1 || true
 aws lambda create-function --function-name webhook-fn \
-  --runtime nodejs22.x --architectures x86_64 --memory-size 256 --timeout 10 \
+  --runtime nodejs22.x --architectures "$ARCH" --memory-size 256 --timeout 10 \
   --handler index.handler --zip-file fileb://dist/webhook/function.zip --role "$ROLE" \
   --environment "Variables={WEBHOOK_SECRET=$SECRET,QUEUE_URL=$QUEUE_URL}" \
   --query State --output text
 aws lambda create-function --function-name worker-fn \
-  --runtime nodejs22.x --architectures x86_64 --memory-size 256 --timeout 20 \
+  --runtime nodejs22.x --architectures "$ARCH" --memory-size 256 --timeout 20 \
   --handler index.handler --zip-file fileb://dist/worker/function.zip --role "$ROLE" \
   --environment "Variables={EVENTS_TABLE=processed-events,ORDERS_TABLE=orders}" \
   --query State --output text

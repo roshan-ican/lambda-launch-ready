@@ -6,6 +6,66 @@ Acceptance: see cold-start rate and latency; checkout p95 under 500 ms and worst
 
 2026-11-24: main plan is TypeScript, Projects 01 to 06. The Python work in `02-lean-package-py` is an optional SnapStart side track (Node.js has no SnapStart).
 
+---
+
+# START HERE (handoff, written 2026-11-24 on the Windows PC)
+
+## Why this project exists
+Interview prep. A stealth fintech has 2 technical rounds coming (date not confirmed, roughly 5 days from 2026-11-24): live coding, mainly system design, AWS, React + Next.js, database, backend. The interviewer is the CTO. This repo is the hands-on story with real numbers.
+
+## Where the code is
+- All work so far is on branch **`projects-02-03`** (pushed to GitHub, NOT merged into `main` yet). `main` only has Project 01.
+- On the laptop: `git fetch` then `git switch projects-02-03`.
+
+## Laptop setup (fresh machine)
+1. Install Docker, Node 22, AWS CLI v2 (and Python 3.12 only if you want the Python side track).
+2. `git clone https://github.com/roshan-ican/lambda-launch-ready && cd lambda-launch-ready && git switch projects-02-03`
+3. Create `.env` in the repo root with one line: `LOCALSTACK_AUTH_TOKEN=...` (from app.localstack.cloud, Auth Tokens). Never commit it. If LocalStack exits with code 55 "License activation failed", this file is missing or wrong.
+4. `docker compose up -d`, wait about 20 s, then `curl localhost:4566/_localstack/health` must return JSON.
+5. In each of `01-observability`, `02-lean-bundle`, `03-webhook-reliability`: `npm install`, then `npm test`. Expected: 13, 12 and 16 tests pass.
+6. Deploy scripts pick `arm64` on an Apple Silicon Mac and `x86_64` elsewhere, automatically.
+7. Windows only: `.npmrc` (gitignored, so it will not be on the laptop) makes npm run scripts with Git Bash instead of WSL. On a Mac you do not need it. On another Windows PC, create `.npmrc` in 02 and 03 with `script-shell=C:/Program Files/Git/bin/bash.exe`.
+
+## What is done (with proof)
+| # | What | Where | Proof |
+|---|---|---|---|
+| 01 | Cold start observability: `coldStart`, `initMs`, `handlerMs` log line, p50/p95/p99 report | `01-observability` | 18.4% cold under 20 concurrent |
+| 02 | Heavy handler (7 SDK clients) vs lazy getters (`clients.ts`) vs `--minify` | `02-lean-bundle` | p95 392 to 160 ms, worst cold 470 to 166 ms, bundle 2.58 MB to 722 KB |
+| 02 demo | `npm run demo`: request 1 cold, request 2 warm, 50 at once = 48 cold | `02-lean-bundle/src/demo.ts` | see table below |
+| 03 | HMAC signature check, webhook Lambda (401/400/200 then SQS), idempotent worker (DynamoDB transaction with `attribute_not_exists(eventId)`), partial batch failures | `03-webhook-reliability` | 16 tests |
+| 03 demo | `npm run deploy` then `npm run demo:dup`: same webhook 5 times, processed once, 4 skipped, order pending to paid | `03-webhook-reliability/src/demo-duplicates.ts` | PASS |
+| side | Python: heavy numpy/pandas init about 1.3 s, lazy imports about 35 ms; SnapStart not on Node.js | `02-lean-package-py` | parked, talking point only |
+
+Who wrote what: you typed `cold-start.ts`, `timing.ts`, `stats.ts` (01), `clients.ts` and the lazy `handler.ts` (02, with fixes), `signature.ts`, `webhook.ts` (03), most of `worker.ts` (Claude fixed 7 bugs). Claude wrote tests, deploy/load/report/demo scripts.
+
+## How to run each demo (LocalStack must be up)
+- 02: `cd 02-lean-bundle && npm run deploy && npm run load && npm run report && npm run demo`
+- 03: `cd 03-webhook-reliability && npm run deploy && npm run demo:dup`
+
+## What is left, in order
+1. **03 failure path (acceptance #4)**: add a way to make the worker fail on purpose for one order (for example an `orderId` starting with `fail_` throws), send it, watch SQS retry it 3 times (`maxReceiveCount` 3 is already set) and land in `payments-dlq`; add a CloudWatch alarm on the DLQ `ApproximateNumberOfMessagesVisible >= 1`; write `replay.ts` that moves DLQ messages back to `payments` after the "bug" is fixed; a `demo:fail` script. Note: LocalStack may not emit SQS metrics, so the alarm may not fire locally; say so honestly.
+2. **HTTP entry points**: Lambda Function URLs (or API Gateway HTTP API) on LocalStack for the checkout Lambda and webhook Lambda, plus a small "create order" endpoint writing `pending` orders.
+3. **Next.js checkout UI** (Next.js + Node): Pay button creates an order; a server-side API route plays the fake payment provider (signs the webhook with the secret, never in the browser); buttons: "send webhook 5x", "make it fail", "replay DLQ", "burst 50"; a live timeline (cold/warm + init ms, processed/duplicate/DLQ, order status). Simulated payments only, no real money.
+4. **README**: architecture diagram, before/after tables (copy from this file), how to run, what LocalStack cannot show.
+5. **Interview practice (do not skip, system design is the main round)**: design a payment/checkout system out loud; idempotency, at-least-once delivery, retries, DLQ, outbox pattern; DB connections under a spike (pooling, RDS Proxy) as a discussion (Project 04 is talk-only); CDK / infrastructure as code as a discussion (Project 05 is talk-only); live-coding drills in TypeScript and a React component; one full mock interview.
+
+## Open questions to answer (practice)
+- Your p95 quiz: 100 requests, 90 at 10 ms, 8 at 200 ms, 2 at 900 ms. What is p95, and does it pass under 500 ms?
+- Why does the webhook Lambda put messages on SQS instead of writing DynamoDB itself? (two reasons)
+- evt_1 already processed, then evt_1 arrives with a different orderId. What does the worker do and why is that right?
+
+## Lessons and gotchas to remember
+- Lazy loading makes cold starts shorter, not rarer; cold-start rate depends on concurrency.
+- A client every request needs belongs at module scope; lazy getters are for clients only some routes need.
+- ESM bundle of AWS SDK v3 fails with "Dynamic require of node:https"; Lambda bundles are CJS (`dist/index.js`), local tools use `--packages=external`.
+- Typos inside DynamoDB expressions compile fine; only tests or a real run catch them.
+- `for...in` gives indexes, `for...of` gives items.
+- Deleting a Lambda does not delete its SQS event source mapping; `03/deploy.sh` removes old mappings first.
+- LocalStack does not model memory/CPU, so memory tuning cannot be measured locally.
+- LocalStack timings show direction, not AWS reality. The 21.6 s burst wait is the laptop starting 48 containers.
+
+---
+
 ## Decisions
 | Decision | Choice | Why |
 |---|---|---|
@@ -103,8 +163,8 @@ Interview rounds expected: live coding, mainly system design, AWS, React + Next.
 | 4 (11-27) | README with architecture diagram and before/after table | System design: design a payment/checkout system; DB connections under a spike (04 as discussion: pooling, RDS Proxy); CDK (05) as discussion |
 | 5 (11-28) | Polish only | Live-coding drills (TypeScript, a React component, a small API), full mock interview |
 Cut from the build: 04 and 05 become talk-through topics, 06 becomes the README. SnapStart side track dropped (know it as a talking point).
-| 1.74 MB (lazy) | 304 KB | 103 | 20 | 19.4% | 0 ms | 140 ms | 164 ms | 208 ms | 317 ms |
-Fix B (lazy clients, only /receipt and /order load S3 or DynamoDB): p95 392 to 140 ms, worst cold 470 to 208 ms. Cold-start RATE unchanged (lazy makes each cold start shorter, not rarer). Bundle still 1.7 MB because esbuild inlines the dynamically imported S3 and DynamoDB code; it is just not run at Init.
+
+Fix B note (lazy clients, only /receipt and /order load S3 or DynamoDB): p95 392 to 140 ms, worst cold 470 to 208 ms. Cold-start RATE unchanged (lazy makes each cold start shorter, not rarer). Bundle still 1.7 MB because esbuild inlines the dynamically imported S3 and DynamoDB code; it is just not run at Init.
 
 ### Demo: `npm run demo` in 02-lean-bundle (cold, warm, burst of 50)
 Resets environments, then: request 1 COLD (init 174 ms, Lambda Init 277 ms, customer waited 1304 ms incl. LocalStack starting a container); request 2 warm (waited 30 ms); 50 at once: 48 cold, 2 warm, cold init 72 to 201 ms, slowest customer wait 21.6 s (a laptop starting 48 Docker containers; not AWS behaviour).
