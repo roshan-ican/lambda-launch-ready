@@ -7,12 +7,9 @@ import { DynamoDBClient, ScanCommand } from "@aws-sdk/client-dynamodb";
 import { GetQueueAttributesCommand, GetQueueUrlCommand, SQSClient } from "@aws-sdk/client-sqs";
 import { CloudWatchClient, DescribeAlarmsCommand } from "@aws-sdk/client-cloudwatch";
 import { replay } from "./replay.js";
+import { LOCAL } from "./config.js";
 
-const config = {
-  region: "me-central-1",
-  endpoint: "http://localhost:4566",
-  credentials: { accessKeyId: "test", secretAccessKey: "test" },
-};
+const config = LOCAL;
 const lambda = new LambdaClient(config);
 const db = new DynamoDBClient(config);
 const sqs = new SQSClient(config);

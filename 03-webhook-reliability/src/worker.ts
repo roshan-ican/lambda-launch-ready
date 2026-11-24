@@ -8,8 +8,9 @@ import type {
     SQSEvent,
     SQSBatchResponse
 } from "aws-lambda";
+import { REGION } from "./config.js";
 
-const db = new DynamoDBClient({ region: "me-central-1" })
+const db = new DynamoDBClient({ region: REGION })
 
 function isDuplicate(error: unknown): boolean {
     if (error instanceof TransactionCanceledException && error.CancellationReasons?.[0]?.Code === "ConditionalCheckFailed") {

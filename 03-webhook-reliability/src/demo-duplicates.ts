@@ -2,12 +2,9 @@ import { createHmac } from "node:crypto";
 import { InvokeCommand, LambdaClient } from "@aws-sdk/client-lambda";
 import { DynamoDBClient, GetItemCommand, PutItemCommand } from "@aws-sdk/client-dynamodb";
 import { CloudWatchLogsClient, FilterLogEventsCommand } from "@aws-sdk/client-cloudwatch-logs";
+import { LOCAL } from "./config.js";
 
-const config = {
-  region: "me-central-1",
-  endpoint: "http://localhost:4566",
-  credentials: { accessKeyId: "test", secretAccessKey: "test" },
-};
+const config = LOCAL;
 const lambda = new LambdaClient(config);
 const db = new DynamoDBClient(config);
 const logs = new CloudWatchLogsClient(config);

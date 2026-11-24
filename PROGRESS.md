@@ -44,7 +44,9 @@ Who wrote what: you typed `cold-start.ts`, `timing.ts`, `stats.ts` (01), `client
 
 ## What is left, in order
 1. ✅ **03 failure path (acceptance #4)**, done 2026-11-24: `SIMULATE_BUG` + `fail_` switch in worker; `npm run demo:fail` shows 3 tries then `payments-dlq` (~95 s = 3 × 30 s visibility timeout); alarm `payments-dlq-not-empty` goes ALARM (LocalStack does emit the SQS metric); `src/replay.ts` (send, then delete) + `npm run demo:replay` turns the bug off, replays, order becomes `paid`, alarm back to OK. 22 tests.
-2. **HTTP entry points**: Lambda Function URLs (or API Gateway HTTP API) on LocalStack for the checkout Lambda and webhook Lambda, plus a small "create order" endpoint writing `pending` orders.
+2. ✅ **HTTP entry points**, done 2026-11-24: `create-order-fn` (`src/create-order.ts`, 201 + `ord_<uuid>`, amount in fils) and `webhook-fn` get Lambda Function URLs (`deploy.sh` saves them to `dist/urls.env`). Shared `src/http.ts` (respond, readBody) and `src/config.ts` (REGION, LOCAL). Verified with curl: create order → signed webhook → `paid`. 32 tests.
+   - Gotcha: LocalStack Function URLs don't route `me-*` regions, so project 03 runs in `eu-central-1` locally (real AWS would be `me-central-1`). API Gateway v2 isn't in the free license.
+   - Gotcha: send `content-type: application/json`, or the body arrives in a form the handler rejects.
 3. **Next.js checkout UI** (Next.js + Node): Pay button creates an order; a server-side API route plays the fake payment provider (signs the webhook with the secret, never in the browser); buttons: "send webhook 5x", "make it fail", "replay DLQ", "burst 50"; a live timeline (cold/warm + init ms, processed/duplicate/DLQ, order status). Simulated payments only, no real money.
 4. **README**: architecture diagram, before/after tables (copy from this file), how to run, what LocalStack cannot show.
 5. **Interview practice (do not skip, system design is the main round)**: design a payment/checkout system out loud; idempotency, at-least-once delivery, retries, DLQ, outbox pattern; DB connections under a spike (pooling, RDS Proxy) as a discussion (Project 04 is talk-only); CDK / infrastructure as code as a discussion (Project 05 is talk-only); live-coding drills in TypeScript and a React component; one full mock interview.
@@ -62,6 +64,7 @@ Who wrote what: you typed `cold-start.ts`, `timing.ts`, `stats.ts` (01), `client
 - `for...in` gives indexes, `for...of` gives items.
 - Deleting a Lambda does not delete its SQS event source mapping; `03/deploy.sh` removes old mappings first.
 - LocalStack does not model memory/CPU, so memory tuning cannot be measured locally.
+- Never put a function in a template string without `()`: `${randomUUID}` prints its source code. Only a test catches it.
 - LocalStack timings show direction, not AWS reality. The 21.6 s burst wait is the laptop starting 48 containers.
 
 ---
