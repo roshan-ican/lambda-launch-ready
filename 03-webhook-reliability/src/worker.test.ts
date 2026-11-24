@@ -122,4 +122,22 @@ describe("worker", () => {
     expect(res).toEqual({ batchItemFailures: [{ itemIdentifier: "m2" }] });
     expect(sendSpy).toHaveBeenCalledTimes(3);
   });
+
+  it("fails a fail_ order before writing anything when the bug is on", async () => {
+    vi.stubEnv("SIMULATE_BUG", "true");
+    const res = await handler(eventOf(record("m1", paid("evt_9", "fail_42"))));
+
+    expect(res).toEqual({ batchItemFailures: [{ itemIdentifier: "m1" }] });
+    expect(sendSpy).not.toHaveBeenCalled();
+    vi.unstubAllEnvs();
+  });
+
+  it("processes a fail_ order normally once the bug is fixed", async () => {
+    vi.stubEnv("SIMULATE_BUG", "false");
+    const res = await handler(eventOf(record("m1", paid("evt_9", "fail_42"))));
+
+    expect(res).toEqual({ batchItemFailures: [] });
+    expect(sendSpy).toHaveBeenCalledTimes(1);
+    vi.unstubAllEnvs();
+  });
 });

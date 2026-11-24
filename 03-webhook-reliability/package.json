@@ -7,9 +7,12 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "deploy": "./deploy.sh",
-    "demo:dup": "esbuild src/demo-duplicates.ts --bundle --platform=node --target=node22 --format=esm --packages=external --outfile=dist/demo-duplicates.mjs --log-level=warning && node dist/demo-duplicates.mjs"
+    "demo:dup": "esbuild src/demo-duplicates.ts --bundle --platform=node --target=node22 --format=esm --packages=external --outfile=dist/demo-duplicates.mjs --log-level=warning && node dist/demo-duplicates.mjs",
+    "demo:fail": "esbuild src/demo-fail.ts --bundle --platform=node --target=node22 --format=esm --packages=external --outfile=dist/demo-fail.mjs --log-level=warning && node dist/demo-fail.mjs",
+    "demo:replay": "esbuild src/demo-replay.ts --bundle --platform=node --target=node22 --format=esm --packages=external --outfile=dist/demo-replay.mjs --log-level=warning && node dist/demo-replay.mjs"
   },
   "devDependencies": {
+    "@aws-sdk/client-cloudwatch": "^3.1176.0",
     "@aws-sdk/client-cloudwatch-logs": "^3.1176.0",
     "@aws-sdk/client-lambda": "^3.1176.0",
     "@types/aws-lambda": "^8.10.164",

@@ -23,6 +23,10 @@ export async function handler(event: SQSEvent): Promise<SQSBatchResponse> {
     for (const record of event.Records) {
         try {
             const { eventId, orderId } = JSON.parse(record.body)
+
+            if (process.env.SIMULATE_BUG === "true" && orderId.startsWith("fail_")) {
+                throw new Error(`simulated bug for ${orderId}`)
+            }
             await db.send(new TransactWriteItemsCommand({
                 TransactItems: [
                     {

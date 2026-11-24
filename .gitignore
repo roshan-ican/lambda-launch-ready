@@ -8,3 +8,4 @@ __pycache__/
 .pytest_cache/
 NUL
 .npmrc
+.DS_Store

@@ -57,7 +57,7 @@ aws lambda create-function --function-name webhook-fn \
 aws lambda create-function --function-name worker-fn \
   --runtime nodejs22.x --architectures "$ARCH" --memory-size 256 --timeout 20 \
   --handler index.handler --zip-file fileb://dist/worker/function.zip --role "$ROLE" \
-  --environment "Variables={EVENTS_TABLE=processed-events,ORDERS_TABLE=orders}" \
+  --environment "Variables={EVENTS_TABLE=processed-events,ORDERS_TABLE=orders,SIMULATE_BUG=true}" \
   --query State --output text
 aws lambda wait function-active-v2 --function-name webhook-fn
 aws lambda wait function-active-v2 --function-name worker-fn
@@ -66,3 +66,12 @@ echo "== SQS trigger for worker (partial batch responses on)"
 aws lambda create-event-source-mapping --function-name worker-fn \
   --event-source-arn "$QUEUE_ARN" --batch-size 10 \
   --function-response-types ReportBatchItemFailures --query State --output text
+
+echo "== DLQ alarm"
+aws cloudwatch put-metric-alarm --alarm-name payments-dlq-not-empty \
+    --namespace AWS/SQS --metric-name ApproximateNumberOfMessagesVisible \
+    --dimensions Name=QueueName,Value=payments-dlq \
+    --statistic Maximum --period 60 --evaluation-periods 1 \
+    --threshold 1 --comparison-operator GreaterThanOrEqualToThreshold \
+    --treat-missing-data notBreaching
+
