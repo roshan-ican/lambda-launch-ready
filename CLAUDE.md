@@ -22,6 +22,6 @@ Full steps are in `PROGRESS.md` under "START HERE". Short version:
 5. `npm install && npm test` in `01-observability`, `02-lean-bundle`, `03-webhook-reliability`
 
 ## Next
-See "What is left, in order" in `PROGRESS.md`. First up: the Project 03 failure path (DLQ, alarm, replay), then the Next.js demo UI, then README, then interview practice (system design is the main round).
+See "What is left, in order" in `PROGRESS.md`. Done: Project 03 failure path, HTTP entry points, Next.js checkout UI (`checkout-ui/`). Next: walk through the UI code together, record the LinkedIn demo, then README, then interview practice (system design is the main round).
 
 Original Project 02 note: Project 02 (TypeScript, `02-lean-bundle`) — build a deliberately heavy handler (imports all AWS clients at top), measure with deploy/load/report, then fix with esbuild minify, per-client `@aws-sdk/client-*` imports, lazy clients. Goal: checkout p95 under 500 ms, worst cold start under 1 s, compared against the Project 01 baseline in `PROGRESS.md`. Then 03 to 06, then the optional Python SnapStart side track.

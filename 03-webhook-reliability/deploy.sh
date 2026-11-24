@@ -92,3 +92,10 @@ ORDER_URL=$(aws lambda get-function-url-config --function-name create-order-fn -
 WEBHOOK_URL=$(aws lambda get-function-url-config --function-name webhook-fn --query FunctionUrl --output text)
 printf 'ORDER_URL=%s\nWEBHOOK_URL=%s\n' "$ORDER_URL" "$WEBHOOK_URL" > dist/urls.env
 echo "Saved to dist/urls.env"
+
+# Hand the URLs to the Next.js UI (server-side only; .env.local is git-ignored)
+UI_ENV=../checkout-ui/.env.local
+if [ -d ../checkout-ui ]; then
+  printf 'ORDER_URL=%s\nWEBHOOK_URL=%s\nWEBHOOK_SECRET=%s\n' "$ORDER_URL" "$WEBHOOK_URL" "$SECRET" > "$UI_ENV"
+  echo "Wrote $UI_ENV"
+fi
