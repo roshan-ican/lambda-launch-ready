@@ -1,0 +1,33 @@
+{
+  "name": "02-lean-bundle",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "build": "esbuild src/handler.ts --bundle --minify --platform=node --target=node22 --outfile=dist/index.js && cd dist && zip -qj function.zip index.js",
+    "deploy": "./deploy.sh",
+    "load": "esbuild src/load.ts --bundle --platform=node --target=node22 --format=esm --packages=external --outfile=dist/load.mjs --log-level=warning && node dist/load.mjs",
+    "report": "esbuild src/report.ts --bundle --platform=node --target=node22 --format=esm --packages=external --outfile=dist/report.mjs --log-level=warning && node dist/report.mjs",
+    "demo": "esbuild src/demo.ts --bundle --platform=node --target=node22 --format=esm --packages=external --outfile=dist/demo.mjs --log-level=warning && node dist/demo.mjs"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-cloudwatch-logs": "^3.1176.0",
+    "@aws-sdk/client-lambda": "^3.1176.0",
+    "@types/aws-lambda": "^8.10.164",
+    "@types/node": "^26.6.6",
+    "esbuild": "^0.28.2",
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.1"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1176.0",
+    "@aws-sdk/client-kms": "^3.1176.0",
+    "@aws-sdk/client-s3": "^3.1176.0",
+    "@aws-sdk/client-secrets-manager": "^3.1176.0",
+    "@aws-sdk/client-sns": "^3.1176.0",
+    "@aws-sdk/client-sqs": "^3.1176.0",
+    "@aws-sdk/client-ssm": "^3.1176.0"
+  }
+}

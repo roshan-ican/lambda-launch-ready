@@ -3,3 +3,8 @@ dist/
 .env
 volume/
 cdk.out/
+.venv/
+__pycache__/
+.pytest_cache/
+NUL
+.npmrc

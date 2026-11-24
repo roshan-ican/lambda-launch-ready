@@ -3,11 +3,14 @@
 Read `PROGRESS.md` before doing anything. It says where we are and what's next.
 
 ## How we work (pair programming)
-- I'm learning TypeScript + AWS. Grill me like a beginner.
-- You give **full code**, I type the logic myself. You write tests, scripts, build wiring.
+- I'm learning TypeScript + AWS lambda.
+- Give pseudocode first. Then give full code backed by verified sources (official docs), never unverified or guessed code. I type the logic myself. You write tests, scripts, build wiring.
 - Repeated patterns: say "do it like the last one" instead of repeating code. Slow fade.
 - Keep answers **short**. Full detail only for new step code.
-- Everything runs on **LocalStack** (no real AWS spend). Region `me-central-1`.
+- Everything runs on **LocalStack**, region `me-central-1`. Only exception: one optional real-AWS SnapStart test at the end, with a budget alarm, and only when I say go.
+- Main plan is **TypeScript** (Projects 01 to 06, see PROGRESS.md). The Python work in `02-lean-package-py` is a side track for SnapStart (Node.js has no SnapStart).
+- Explain concepts as a story on a real app (checkout): numbered steps, a scenarios table, then my own code line by line, a check-your-understanding question, and an interview takeaway.
+- Always say the total remaining plan and rough time when I ask. Do not run ahead and write the logic I am supposed to type.
 - Commit under my name only, no co-author trailer.
 
 ## Setup on a new machine
@@ -18,4 +21,4 @@ Read `PROGRESS.md` before doing anything. It says where we are and what's next.
 5. `cd 01-observability && npm install && npm test`
 
 ## Next
-Project 02 — lean bundle: build a deliberately heavy handler (imports all AWS clients at top), measure with deploy/load/report, then fix with esbuild minify, per-client `@aws-sdk/client-*` imports, lazy clients. Compare against the project 01 baseline in `PROGRESS.md`.
+Project 02 (TypeScript, `02-lean-bundle`) — build a deliberately heavy handler (imports all AWS clients at top), measure with deploy/load/report, then fix with esbuild minify, per-client `@aws-sdk/client-*` imports, lazy clients. Goal: checkout p95 under 500 ms, worst cold start under 1 s, compared against the Project 01 baseline in `PROGRESS.md`. Then 03 to 06, then the optional Python SnapStart side track.
