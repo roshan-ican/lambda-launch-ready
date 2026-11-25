@@ -10,14 +10,7 @@ Making a TypeScript AWS Lambda payments platform ready for launch: cold starts, 
 
 ## How a payment travels
 
-```
-Browser ── Pay ──► Next.js server ──► create-order-fn ──► orders (pending)
-                        │
-                        └─ signs webhook (HMAC) ──► webhook-fn ──► SQS payments ──► worker-fn ──► orders (paid)
-                                                                        │ 3 failed tries
-                                                                        ▼
-                                                                   payments-dlq ──► alarm ──► replay
-```
+![Architecture: customer pays, provider confirms through webhook, SQS and an idempotent worker, failures go to a DLQ with alarm and replay](docs/architecture.svg)
 
 - **Idempotent worker:** the eventId and the order update are written in one DynamoDB transaction, so the same webhook sent 5× is applied once.
 - **No lost payments:** after 3 failed tries a message is parked in `payments-dlq`, a CloudWatch alarm fires, and replay sends it back (send first, then delete).

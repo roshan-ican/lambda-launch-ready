@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 900" font-family="Inter, Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1f2a3d"/></marker>
+    <marker id="ahRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#d93a4a"/></marker>
+    <marker id="ahBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2563eb"/></marker>
+  </defs>
+  <rect width="2000" height="900" fill="#ffffff"/>
+
+  <rect x="288" y="72" width="1236" height="210" rx="14" fill="#eef4ff" stroke="#7aa2e8" stroke-width="2" stroke-dasharray="8 6"/>
+  <rect x="288" y="335" width="1236" height="245" rx="14" fill="#eefaf2" stroke="#6cc08c" stroke-width="2" stroke-dasharray="8 6"/>
+  <rect x="588" y="642" width="936" height="208" rx="14" fill="#fff1f2" stroke="#e8808b" stroke-width="2" stroke-dasharray="8 6"/>
+
+  <rect x="768" y="55" width="275" height="38" rx="19" fill="#2563eb"/>
+  <text x="905" y="81" text-anchor="middle" font-size="20" font-weight="700" fill="#fff">1 · Customer pays</text>
+  <rect x="732" y="318" width="348" height="38" rx="19" fill="#16834a"/>
+  <text x="906" y="344" text-anchor="middle" font-size="20" font-weight="700" fill="#fff">2 · Provider confirms payment</text>
+  <rect x="1150" y="625" width="325" height="38" rx="19" fill="#d93a4a"/>
+  <text x="1312" y="651" text-anchor="middle" font-size="20" font-weight="700" fill="#fff">3 · If processing fails</text>
+
+  <g fill="#1f2a3d">
+    <circle cx="118" cy="148" r="11"/><circle cx="92" cy="158" r="8"/><circle cx="144" cy="158" r="8"/>
+    <path d="M90,188 q28,-34 56,0 z"/><path d="M78,190 q14,-22 30,-6 v6 z"/><path d="M128,184 q16,-16 30,6 z"/>
+  </g>
+  <text x="118" y="244" text-anchor="middle" font-size="22" font-weight="700" fill="#111">Customer</text>
+
+  <g font-size="22" font-weight="700" fill="#111" text-anchor="middle">
+    <rect x="398" y="125" width="80" height="80" rx="12" fill="#1f2a3d"/>
+    <rect x="418" y="148" width="40" height="32" rx="5" fill="none" stroke="#fff" stroke-width="3"/><line x1="418" y1="158" x2="458" y2="158" stroke="#fff" stroke-width="3"/><circle cx="450" cy="170" r="3" fill="#3ddc84"/>
+    <text x="438" y="238">Checkout UI</text>
+    <rect x="765" y="125" width="80" height="80" rx="12" fill="#f07c0c"/><text x="805" y="185" font-size="48" fill="#fff">λ</text>
+    <text x="805" y="238">Create Order λ</text>
+
+    <rect x="360" y="395" width="80" height="80" rx="12" fill="#17924f"/>
+    <path d="M400,410 l22,8 v18 q0,18 -22,26 q-22,-8 -22,-26 v-18 z" fill="none" stroke="#fff" stroke-width="3"/><path d="M390,436 l7,7 l13,-14" fill="none" stroke="#fff" stroke-width="3"/>
+    <text x="400" y="508">Payment Provider</text>
+    <rect x="652" y="395" width="80" height="80" rx="12" fill="#f07c0c"/><text x="692" y="455" font-size="48" fill="#fff">λ</text>
+    <text x="692" y="508">Webhook λ</text>
+    <rect x="952" y="395" width="80" height="80" rx="12" fill="#e5197a"/>
+    <rect x="968" y="420" width="48" height="28" rx="6" fill="none" stroke="#fff" stroke-width="3"/><line x1="983" y1="427" x2="983" y2="441" stroke="#fff" stroke-width="3"/><line x1="992" y1="427" x2="992" y2="441" stroke="#fff" stroke-width="3"/><line x1="1001" y1="427" x2="1001" y2="441" stroke="#fff" stroke-width="3"/>
+    <text x="992" y="508">Amazon SQS</text>
+    <rect x="1252" y="395" width="80" height="80" rx="12" fill="#f07c0c"/><text x="1292" y="455" font-size="48" fill="#fff">λ</text>
+    <text x="1292" y="508">Worker λ</text>
+
+    <rect x="652" y="692" width="80" height="80" rx="12" fill="#2563eb"/>
+    <path d="M708,722 a18,18 0 1 1 -6,-8" fill="none" stroke="#fff" stroke-width="4"/><path d="M700,706 l4,10 l10,-3" fill="none" stroke="#fff" stroke-width="4"/>
+    <text x="692" y="805">Replay</text>
+    <rect x="952" y="692" width="80" height="80" rx="12" fill="#d93a4a"/>
+    <rect x="970" y="718" width="44" height="28" rx="5" fill="none" stroke="#fff" stroke-width="3"/><path d="M984,724 l16,16 M1000,724 l-16,16" stroke="#fff" stroke-width="3"/>
+    <text x="992" y="805">Dead-Letter Queue</text>
+    <rect x="1252" y="692" width="80" height="80" rx="12" fill="#b3124e"/>
+    <path d="M1278,750 v-14 a14,14 0 0 1 28,0 v14 l4,5 h-36 z" fill="none" stroke="#fff" stroke-width="3"/><circle cx="1292" cy="760" r="4" fill="#fff"/>
+    <text x="1292" y="805">CloudWatch Alarm</text>
+  </g>
+
+  <g font-size="18" fill="#4b5563" text-anchor="middle">
+    <text x="438" y="265">Next.js · Pay 49.99 AED</text>
+    <text x="805" y="265">amount in fils: 4999</text>
+    <text x="400" y="535">signs webhook (HMAC)</text>
+    <text x="692" y="535">verifies signature</text><text x="692" y="558">replies 200 fast</text>
+    <text x="992" y="535">reliable delivery</text>
+    <text x="1292" y="535">idempotent:</text><text x="1292" y="558">applies once</text>
+    <text x="692" y="832">send first, then delete</text>
+    <text x="992" y="832">parked, not lost</text>
+    <text x="1292" y="832">team is notified</text>
+  </g>
+
+  <g stroke="#1f2a3d" stroke-width="3" fill="none" marker-end="url(#ah)">
+    <line x1="172" y1="165" x2="390" y2="165"/>
+    <line x1="488" y1="165" x2="755" y2="165"/>
+    <line x1="855" y1="165" x2="1598" y2="165"/>
+    <line x1="450" y1="435" x2="642" y2="435"/>
+    <line x1="742" y1="435" x2="942" y2="435"/>
+    <line x1="1042" y1="435" x2="1242" y2="435"/>
+    <line x1="1342" y1="435" x2="1598" y2="435"/>
+  </g>
+  <line x1="1032" y1="575" x2="1032" y2="680" stroke="#d93a4a" stroke-width="3" stroke-dasharray="7 6" marker-end="url(#ahRed)"/>
+  <text x="1050" y="609" font-size="18" font-weight="600" fill="#d93a4a">after 3 failed tries</text>
+  <line x1="1042" y1="732" x2="1242" y2="732" stroke="#d93a4a" stroke-width="3" marker-end="url(#ahRed)"/>
+  <text x="1142" y="719" text-anchor="middle" font-size="18" font-weight="600" fill="#d93a4a">≥ 1 message</text>
+  <line x1="942" y1="732" x2="742" y2="732" stroke="#2563eb" stroke-width="3" marker-end="url(#ahBlue)"/>
+  <text x="843" y="719" text-anchor="middle" font-size="18" font-weight="600" fill="#2563eb">after the fix</text>
+  <path d="M692,682 V610 q0,-15 15,-15 H977 q15,0 15,-15 V550" stroke="#2563eb" stroke-width="3" fill="none" marker-end="url(#ahBlue)"/>
+
+  <rect x="1113" y="146" width="236" height="38" rx="19" fill="#fff" stroke="#c9d6ee" stroke-width="2"/>
+  <text x="1231" y="171" text-anchor="middle" font-size="19" font-weight="600" fill="#2563eb">order = pending</text>
+  <rect x="1382" y="416" width="176" height="38" rx="19" fill="#fff" stroke="#bfe3cc" stroke-width="2"/>
+  <text x="1470" y="441" text-anchor="middle" font-size="19" font-weight="600" fill="#16834a">order = paid</text>
+
+  <rect x="1610" y="95" width="327" height="483" rx="16" fill="#eef7fb" stroke="#8cc7de" stroke-width="3"/>
+  <g fill="#2f7ed8"><ellipse cx="1773" cy="145" rx="28" ry="10"/><path d="M1745,145 v40 a28,10 0 0 0 56,0 v-40 a28,10 0 0 1 -56,0 z"/></g>
+  <path d="M1745,160 a28,10 0 0 0 56,0 M1745,174 a28,10 0 0 0 56,0" stroke="#eef7fb" stroke-width="3" fill="none"/>
+  <text x="1773" y="252" text-anchor="middle" font-size="28" font-weight="700" fill="#111">DynamoDB</text>
+  <text x="1635" y="305" font-size="20" font-weight="700" fill="#111">orders</text>
+  <text x="1635" y="332" font-size="18" fill="#4b5563">pending → paid</text>
+  <line x1="1635" y1="357" x2="1912" y2="357" stroke="#d3e3ea" stroke-width="2"/>
+  <text x="1635" y="392" font-size="20" font-weight="700" fill="#111">processed-events</text>
+  <text x="1635" y="419" font-size="18" fill="#4b5563">one row per eventId</text>
+  <line x1="1635" y1="444" x2="1912" y2="444" stroke="#d3e3ea" stroke-width="2"/>
+  <text x="1635" y="482" font-size="18" fill="#4b5563">both written in</text>
+  <text x="1635" y="507" font-size="18" fill="#4b5563">one transaction</text>
+  <circle cx="1646" cy="541" r="11" fill="#16834a"/><path d="M1640,541 l4,5 l8,-9" stroke="#fff" stroke-width="2.5" fill="none"/>
+  <text x="1667" y="548" font-size="19" font-weight="700" fill="#16834a">repeat = skipped</text>
+</svg>
